@@ -2,39 +2,38 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'amendev/mini-projet'  
-        VERSION_TAG = 'v1'
+        DOCKER_IMAGE = 'islem646/mini-projet'
     }
 
     stages {
-        stage('clone code') {
+        stage('clone repo') {
             steps {
-                git 'https://github.com/amenmarzouk/mini-projet.git'
+                git 'https://github.com/islemnaffouti765/mini-projet.git'
             }
         }
-        stage('build docker image') {
+        stage('build') {
             steps {
                 script {
-                  docker.build("${DOCKER_IMAGE}:${VERSION_TAG}")
+                  docker.build("${DOCKER_IMAGE}:1.0")
                 }
             }
         }
 
-        stage('push docker image') {
+        stage('pushto docker hub') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-login') {
-                        docker.image("${DOCKER_IMAGE}:${VERSION_TAG}").push()
+                    docker.withRegistry('https://registry.hub.docker.com', 'DockerHubCredentials') {
+                        docker.image("${DOCKER_IMAGE}:1.0").push()
                     }
                 }
             }
         }
-    stage('deploy docker container') {
+    stage('deploy') {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-login') {
-                        def docker_image = docker.image("${DOCKER_IMAGE}:${VERSION_TAG}")
-                        docker_image.run('--name mini-projet -p 8020:8020')
+                        def docker_image = docker.image("${DOCKER_IMAGE}:1.0")
+                        docker_image.run('--name mini-projet -p 3000:3000')
                  }
                 }
             }
