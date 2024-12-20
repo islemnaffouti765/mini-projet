@@ -31,7 +31,7 @@ pipeline {
     stage('deploy') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-login') {
+                    docker.withRegistry('https://registry.hub.docker.com', 'DockerHubCredentials') {
                         def docker_image = docker.image("${DOCKER_IMAGE}:1.0")
                         docker_image.run('--name mini-projet -p 3000:3000')
                  }
